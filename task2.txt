@@ -1,0 +1,186 @@
+CREATE DATABASE task2;
+
+USE task2;
+
+## Creating table customers
+
+CREATE TABLE customers (
+    Customerid INT PRIMARY KEY,
+    FIRSTNAME VARCHAR(50),
+    LASTNAME VARCHAR(50),
+    EMAIL VARCHAR(50),
+    REGISTRATIONDATE DATE
+    );
+
+## Inserting values in table customers 
+
+INSERT INTO customers
+VALUES
+(1,'John','Doe','john.doe@gmail.com','2022-03-15'),
+(2,'Jane','Smith','jane.smith@gmail.com','2021-11-02');
+
+## Creating table orders
+
+CREATE TABLE orders (
+    OrderID INT PRIMARY KEY,
+    CUSTOMERID INT,
+    ORDERDATE DATE,
+    TOTALAMOUNT DECIMAL(10,2));
+
+## Inserting values in table orders 
+
+INSERT INTO orders
+VALUES
+(101,1,'2023-07-01',150.50),
+(102,2,'2023-07-03',200.75);
+
+## Creating table employees
+
+
+CREATE TABLE employees(
+    EMPL0YEEID INT PRIMARY KEY,
+    FIRSTNAME VARCHAR(50),
+    LASTNAME VARCHAR(50),
+    DEPARTMENT VARCHAR(50),
+    HIREDATE DATE,
+    SALARY DECIMAL(10,2)
+    );
+ 
+## Inserting values in table employees
+
+   
+INSERT INTO employees
+VALUES
+(1,'Mark','Johnson','Sales','2020-01-15','50000.00'),
+(2,'Susan','Lee','HR','2021-03-20','55000.00');
+ 
+
+## 1. INNER JOIN
+
+SELECT c.*, o.*
+FROM customers c
+INNER JOIN orders o
+ON c.Customerid = o.Customerid;
+
+## 2. LEFT JOIN 
+
+SELECT c.* , o.*
+FROM customers c 
+LEFT JOIN orders o 
+ON c.Customerid = o.CUSTOMERID;
+
+## 3. RIGHT JOIN
+
+SELECT c.*, o.*
+FROM customers c
+RIGHT JOIN orders o
+ON c.Customerid = o.Customerid;
+
+## 4. FULL OUTER JOIN
+
+SELECT c.*, o.*
+FROM customers c
+FULL OUTER JOIN orders o
+ON c.Customerid = o.Customerid;
+
+## 5. SUBQUERY
+
+SELECT DISTINCT c.*
+FROM customers c
+JOIN orders o ON c.Customerid = o.Customerid
+WHERE o.TotalAmount > (
+    SELECT AVG(TotalAmount) FROM orders
+);
+
+## 6. SUBQUERY
+
+SELECT *
+FROM employees
+WHERE Salary > (
+    SELECT AVG(Salary) FROM employees
+);
+
+
+## 7. Extract year & month
+
+SELECT OrderID,
+       YEAR(OrderDate) AS Year,
+       MONTH(OrderDate) AS Month
+FROM orders;
+
+## 8. Difference in days
+
+SELECT OrderID,
+       DATEDIFF(CURDATE(), OrderDate) AS DaysDifference
+FROM orders;
+
+## 9. Format date
+
+SELECT OrderID,
+       DATE_FORMAT(OrderDate, '%d-%b-%Y') AS FormattedDate
+FROM orders;
+
+## 10. Concatenate full name
+
+SELECT CONCAT(FirstName, ' ', LastName) AS FullName
+FROM customers;
+
+## 11. Replace part of string
+
+SELECT REPLACE(FirstName, 'John', 'Jonathan') AS UpdatedName
+FROM customers;
+
+## 12. Uppercase / Lowercase
+
+SELECT UPPER(FirstName) AS FirstName_Upper,
+       LOWER(LastName) AS LastName_Lower
+FROM customers;
+
+## 13. Trim spaces
+
+SELECT TRIM(Email) AS CleanEmail
+FROM customers;
+
+## 14. Running total
+
+SELECT OrderID,
+       TotalAmount,
+       SUM(TotalAmount) OVER (ORDER BY OrderID) AS RunningTotal
+FROM orders;
+
+## 15 Rank orders
+
+SELECT OrderID,
+       TotalAmount,
+       RANK() OVER (ORDER BY TotalAmount DESC) AS RankOrder
+FROM orders;
+
+## 16 Discount using CASE
+
+SELECT OrderID,
+       TotalAmount,
+       CASE
+           WHEN TotalAmount > 1000 THEN '10% OFF'
+           WHEN TotalAmount > 500 THEN '5% OFF'
+           ELSE 'No Discount'
+       END AS Discount
+FROM orders;
+
+## 17 Salary category
+
+SELECT EMPL0YEEID,
+       FirstName,
+       Salary,
+       CASE
+           WHEN Salary >= 60000 THEN 'High'
+           WHEN Salary >= 50000 THEN 'Medium'
+           ELSE 'Low'
+       END AS SalaryCategory
+FROM employees;
+
+
+
+
+
+
+
